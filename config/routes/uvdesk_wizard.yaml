@@ -1,3 +1,0 @@
-# uvdesk_setup_wizard_routing_resources:
-#     prefix:   /
-#     resource: "../../wizard/Resources/config/routes.yaml"

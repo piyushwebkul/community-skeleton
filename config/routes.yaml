@@ -1,0 +1,3 @@
+uvdesk_helpdesk:
+    resource: .
+    type: uvdesk_router

@@ -6,8 +6,11 @@ services:
 
     Webkul\UVDesk\Wizard\:
         resource: '../../*'
-        exclude: '../../{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
     Webkul\UVDesk\Wizard\Controller\:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
+    
+    Webkul\UVDesk\Wizard\Routes\Wizard:
+        tags:
+            - { name: uvdesk.router, env: dev }
