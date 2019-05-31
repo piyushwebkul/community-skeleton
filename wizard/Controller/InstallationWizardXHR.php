@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Setup\Controller;
+namespace Webkul\UVDesk\Wizard\Controller;
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;

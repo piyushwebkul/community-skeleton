@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Setup\Command;
+namespace Webkul\UVDesk\Wizard\Command;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;

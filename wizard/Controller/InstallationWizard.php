@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Setup\Controller;
+namespace Webkul\UVDesk\Wizard\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
