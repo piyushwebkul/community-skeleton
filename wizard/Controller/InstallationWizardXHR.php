@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -101,7 +102,7 @@ class InstallationWizardXHR extends Controller
 
                 $port = $request->request->get('port') ? ':' . $request->request->get('port') : '';
                 $_SESSION['DB_CONFIG'] = [
-                    'server' => $request->request->get('serverName') . $port,
+                    'host' => $request->request->get('serverName') . $port,
                     'username' => $request->request->get('username'),
                     'password' => $request->request->get('password'),
                     'database' => $request->request->get('database'),
@@ -131,77 +132,31 @@ class InstallationWizardXHR extends Controller
         return new Response(json_encode(['status' => true]), 200, self::DEFAULT_JSON_HEADERS);
     }
 
-    public function updateConfigurationsXHR(Request $request)
+    public function updateConfigurationsXHR(Request $request, KernelInterface $kernel)
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        $response = new Response(json_encode([]), 200, self::DEFAULT_JSON_HEADERS);
-        
-        $db_params = [
-            'DB_DRIVER' => 'mysql',
-            'DB_HOST' => $_SESSION['DB_CONFIG']['server'],
-            'DB_USER' => $_SESSION['DB_CONFIG']['username'],
-            'DB_PASSWORD' => $_SESSION['DB_CONFIG']['password'],
-            'DB_NAME' => $_SESSION['DB_CONFIG']['database'],
-        ];
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
 
-        if (file_exists('../.env')) {
-            $file = file('../.env');
+        $database_host = $_SESSION['DB_CONFIG']['server'];
+        $database_user = $_SESSION['DB_CONFIG']['username'];
+        $database_pass = $_SESSION['DB_CONFIG']['password'];
+        $database_name = $_SESSION['DB_CONFIG']['database'];
 
-            foreach ($file as $index => $content) {
-                if (false !== strpos($content, 'DATABASE_URL')) {
-                    list($line, $text) = array($index, $content);
-                    break;
-                }
-            }
+        $exit_code = $application->run(new ArrayInput([
+            'command' => 'uvdesk-wizard:envvars:update', 
+            'name' => 'DATABASE_URL', 
+            'value' => sprintf("mysql://%s:%s@%s/%s", $database_user, $database_pass, $database_host, $database_name)
+        ]), new NullOutput());
 
-            $updatedFile = $file;
-            $databasePath = strtr(self::DB_ENV_PATH_TEMPLATE, $db_params);
-            $updatedPath = (null !== $line) ? substr($text, 0, strpos($text, 'DATABASE_URL')) . $databasePath : $databasePath;
-
-            if ($line === null) {
-                $updatedFile[] = $updatedPath;
-            } else {
-                $updatedFile[$line] = $updatedPath;
-            }
-
-            file_put_contents('../.env', $updatedFile);
-        } else if (file_exists('../config/packages/doctrine.yaml')) {
-            $file = file('../config/packages/doctrine.yaml');
-            
-            foreach ($file as $index => $content) {
-                if (false !== strpos($content, 'env(DATABASE_URL)')) {
-                    list($line, $text) = array($index, $content);
-                    break;
-                }
-            }
-            
-            $databasePath = strtr(self::DB_ENV_PATH_PARAM_TEMPLATE, $db_params);
-            $updatedPath = !empty($line) ? substr($text, 0, strpos($text, 'env(DATABASE_URL)')) . $databasePath : $databasePath;
-
-            if (empty($line)) {
-                $updatedFile = [];
-
-                foreach ($file as $text) {
-                    $updatedFile[] = $text;
-
-                    if (false !== strpos($text, 'parameters:')) {
-                        $updatedFile[] = "\t" . $updatedPath;
-                    }
-                }
-            } else {
-                $updatedFile = $file;
-                $updatedFile[$line] = $updatedPath;
-            }
-
-            file_put_contents('../config/packages/doctrine.yaml', $updatedFile);
-        } else {
-            $response->setStatusCode(500);
+        if (0 === $exit_code) {
+            return new JsonResponse(['success' => true]);
         }
 
-        return $response;
+        return new JsonResponse(['success' => false], 500);
     }
 
     public function migrateDatabaseSchemaXHR(Request $request, KernelInterface $kernel)

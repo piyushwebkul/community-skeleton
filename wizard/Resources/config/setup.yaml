@@ -1,3 +1,0 @@
-uvdesk_community_installation_wizard:
-    path:     /
-    controller: Webkul\UVDesk\Wizard\Controller\InstallationWizard::loadWizard

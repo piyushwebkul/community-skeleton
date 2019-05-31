@@ -1,0 +1,15 @@
+# uvdesk_extensions_module_member_routing_resources:
+#     resource: "@UVDeskExtensionBundle/Resources/config/routes/members.yaml"
+#     prefix:   /{_locale}/%uvdesk_site_path.member_prefix%/
+#     requirements:
+#         _locale: %app_locales%
+#     defaults:
+#         _locale: %locale%
+
+# uvdesk_extensions_module_public_routing_resources:
+#     resource: "@UVDeskExtensionBundle/Resources/config/routes/public.yaml"
+#     prefix:   /
+#     requirements:
+#         _locale: %app_locales%
+#     defaults:
+#         _locale: %locale%

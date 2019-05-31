@@ -6,6 +6,9 @@
 parameters:
     locale: 'en'
 
+imports:
+    - { resource: '../wizard/Resources/config/services.yaml' }
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -21,18 +24,10 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
     
-    Webkul\UVDesk\Setup\:
-        resource: '../setup/*'
-        exclude: '../setup/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
-        tags: ['controller.service_arguments']
-    
-    Webkul\UVDesk\Setup\Controller\:
-        resource: '../setup/Controller'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
