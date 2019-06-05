@@ -4,13 +4,13 @@ services:
         autoconfigure: true
         public: false
 
-    Webkul\UVDesk\Wizard\:
+    Wizard\:
         resource: '../../*'
+        exclude: '../../{Console,Routes.php}'
 
-    Webkul\UVDesk\Wizard\Controller\:
+    Wizard\Controller\:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
     
-    Webkul\UVDesk\Wizard\Routes\Wizard:
-        tags:
-            - { name: uvdesk.router, env: dev }
+    Wizard\Routes:
+        tags: ['uvdesk.router']

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Wizard\Controller;
+namespace Wizard\Controller;
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
@@ -15,7 +15,7 @@ use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class InstallationWizardXHR extends Controller
+class WizardXHR extends Controller
 {
     const DB_ENV_PATH_TEMPLATE = "DATABASE_URL=DB_DRIVER://DB_USER:DB_PASSWORD@DB_HOST/DB_NAME\n";
     const DB_ENV_PATH_PARAM_TEMPLATE = "env(DATABASE_URL): 'DB_DRIVER://DB_USER:DB_PASSWORD@DB_HOST/DB_NAME'\n";

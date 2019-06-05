@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Wizard\Command;
+namespace Wizard\Console;
 
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Command\Command;
