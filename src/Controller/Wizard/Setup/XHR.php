@@ -1,6 +1,6 @@
 <?php
 
-namespace Wizard\Controller;
+namespace App\Controller\Wizard\Setup;
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;

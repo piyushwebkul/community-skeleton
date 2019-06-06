@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Wizard\Command;
+namespace Wizard\Console\Wiz\Setup\Seeders;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput as ConsoleOptions;
 
-class PopulateDatabase extends Command
+class Defaults extends Command
 {
     private $container;
     private $entityManager;
@@ -27,7 +27,7 @@ class PopulateDatabase extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk-wizard:populate-database');
+        $this->setName('uvdesk_wizard:setup:seeders:load-defaults');
         $this->setDescription('Migrate your database to the latest schema version.');
     }
 

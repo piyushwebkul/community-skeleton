@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Wizard\Command;
+namespace App\Console\Wiz;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,7 +30,7 @@ class ConfigureHelpdesk extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk-wizard:configure-helpdesk');
+        $this->setName('uvdesk_wizard:configure-helpdesk');
         $this->setDescription('Scans through your helpdesk setup to check for any mis-configurations.');
     }
 

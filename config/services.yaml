@@ -6,9 +6,6 @@
 parameters:
     locale: 'en'
 
-imports:
-    - { resource: '../wizard/Resources/config/services.yaml' }
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -29,6 +26,24 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+    
+    # routes can also be imported separately as services for greater flexibility
+    App\Resources\Routes\:
+        resource: '../../Resources/Routes/*'
+        tags: ['uvdesk_core.routing_definitions']
+    
+    # App\Console\InstallationWizard\:
+    #     resource: '../src/Console/InstallationWizard/*'
+    #     arguments: ['@service_container', '@doctrine.orm.entity_manager']
+    #     tags: ['console.command']
+    
+    # App\Console\InstallationWizard\User\:
+    #     resource: '../../Console/InstallationWizard/User/*'
+    #     tags: ['console.command']
+    
+    # App\Console\InstallationWizard\Database\:
+    #     resource: '../../Console/InstallationWizard/Database/*'
+    #     tags: ['console.command']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

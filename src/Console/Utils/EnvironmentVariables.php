@@ -1,6 +1,6 @@
 <?php
 
-namespace Wizard\Console;
+namespace App\Console\Utils;
 
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Command\Command;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UpdateEnvironmentVariables extends Command
+class EnvironmentVariables extends Command
 {
     private $path;
     private $conf;
@@ -28,8 +28,8 @@ class UpdateEnvironmentVariables extends Command
     protected function configure()
     {
         $this
-            ->setHidden(true)
-            ->setName('uvdesk-wizard:envvars:update')
+            // ->setHidden(true)
+            ->setName('uvdesk:utils:envvars')
             ->setDescription('Makes changes to .env located in project root to update environment variables.');
 
         $this

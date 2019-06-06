@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\UVDesk\Wizard\Command;
+namespace Wizard\Console\Wiz\Setup\Seeders;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class GenerateUserInstance extends Command
+class SuperUser extends Command
 {
     private $user;
     private $role;
@@ -32,7 +32,7 @@ class GenerateUserInstance extends Command
     protected function configure()
     {
         $this
-            ->setName('uvdesk-wizard:create:user-instance')
+            ->setName('uvdesk_wizard:setup:seeders:load-super-user')
             ->setDescription('Creates a new user instance')
             ->setHidden(true);
         

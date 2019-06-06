@@ -1,14 +1,14 @@
 <?php
 
-namespace Wizard;
+namespace App\Resources\Routes;
 
 use Webkul\UVDesk\CoreBundle\Routing\RouterInterface;
 
-class Routes implements RouterInterface
+class InstallationWizardRoutes implements RouterInterface
 {
     public static function getResourcePath()
     {
-        return __DIR__ . "/Resources/config/routes/wizard.yaml";
+        return __DIR__ . "/_config/wiz/community-installer.yaml";
     }
 
     public static function getResourceType()
