@@ -29,7 +29,7 @@ services:
     
     # routes can also be imported separately as services for greater flexibility
     App\Resources\Routes\:
-        resource: '../../Resources/Routes/*'
+        resource: '../src/Resources/Routes/*'
         tags: ['uvdesk_core.routing_definitions']
     
     # App\Console\InstallationWizard\:

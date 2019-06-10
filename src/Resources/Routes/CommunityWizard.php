@@ -4,11 +4,11 @@ namespace App\Resources\Routes;
 
 use Webkul\UVDesk\CoreBundle\Routing\RouterInterface;
 
-class InstallationWizardRoutes implements RouterInterface
+class CommunityWizard implements RouterInterface
 {
     public static function getResourcePath()
     {
-        return __DIR__ . "/_config/wiz/community-installer.yaml";
+        return __DIR__ . "/_routes/wiz/community-installer.yaml";
     }
 
     public static function getResourceType()

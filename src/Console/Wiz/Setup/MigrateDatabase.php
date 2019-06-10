@@ -1,6 +1,6 @@
 <?php
 
-namespace Wizard\Console\Wiz\Setup;
+namespace App\Console\Wiz\Setup;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;

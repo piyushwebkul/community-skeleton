@@ -1,6 +1,6 @@
 <?php
 
-namespace Wizard\Console\Wiz\Setup\Seeders;
+namespace App\Console\Wiz\Setup\Seeders;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
