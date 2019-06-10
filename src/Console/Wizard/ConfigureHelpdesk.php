@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Wiz;
+namespace App\Console\Wizard;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,7 +30,7 @@ class ConfigureHelpdesk extends Command
 
     protected function configure()
     {
-        $this->setName('uvdesk_wizard:configure-helpdesk');
+        $this->setName('uvdesk:wizard:configure-helpdesk');
         $this->setDescription('Scans through your helpdesk setup to check for any mis-configurations.');
     }
 
@@ -113,9 +113,9 @@ class ConfigureHelpdesk extends Command
             $interactiveQuestion = new Question("\n      <comment>Create a new user account with super admin privileges? [Y/N]</comment> ", 'Y');
 
             if ('Y' === strtoupper($this->questionHelper->ask($input, $output, $interactiveQuestion))) {
-                $generateUserInstanceCommand = $this->getApplication()->find('uvdesk:create:user-instance');
+                $generateUserInstanceCommand = $this->getApplication()->find('uvdesk:wizard:setup:create-super-user');
                 $generateUserInstanceCommandOptions = new ConsoleOptions([
-                    'command' => 'create:user-instance',
+                    'command' => 'wizard:setup:create-super-user',
                     'role' => 'ROLE_SUPER_ADMIN',
                 ]);
 

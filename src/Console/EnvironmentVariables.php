@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Utils;
+namespace App\Console;
 
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Command\Command;
@@ -28,8 +28,7 @@ class EnvironmentVariables extends Command
     protected function configure()
     {
         $this
-            // ->setHidden(true)
-            ->setName('uvdesk:utils:envvars')
+            ->setName('uvdesk:env:update')
             ->setDescription('Makes changes to .env located in project root to update environment variables.');
 
         $this

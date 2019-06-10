@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Wiz\Setup\Seeders;
+namespace App\Console\Wizard\Setup;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class SuperUser extends Command
+class CreateSuperUser extends Command
 {
     private $user;
     private $role;
@@ -32,7 +32,7 @@ class SuperUser extends Command
     protected function configure()
     {
         $this
-            ->setName('uvdesk_wizard:setup:seeders:load-super-user')
+            ->setName('uvdesk:wizard:setup:create-super-user')
             ->setDescription('Creates a new user instance')
             ->setHidden(true);
         
