@@ -28,9 +28,9 @@ services:
         tags: ['controller.service_arguments']
     
     # routes can also be imported separately as services for greater flexibility
-    App\Resources\Routes\:
-        resource: '../src/Resources/Routes/*'
-        tags: ['uvdesk_core.routing_definitions']
+    # App\Resources\Routes\:
+    #     resource: '../src/Resources/Routes/*'
+    #     tags: ['uvdesk_core.routing_definitions']
     
     # App\Console\InstallationWizard\:
     #     resource: '../src/Console/InstallationWizard/*'

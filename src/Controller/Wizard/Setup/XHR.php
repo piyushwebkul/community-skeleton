@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Webkul\UVDesk\CoreBundle\Entity as CoreEntities;
+use Webkul\UVDesk\CoreFrameworkBundle\Entity as CoreEntities;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -191,8 +191,8 @@ class XHR extends Controller
 
         $entityManager = $this->getDoctrine()->getEntityManager();
 
-        $role = $entityManager->getRepository('UVDeskCoreBundle:SupportRole')->findOneByCode('ROLE_SUPER_ADMIN');
-        $userInstance = $entityManager->getRepository('UVDeskCoreBundle:UserInstance')->findOneBy([
+        $role = $entityManager->getRepository('CoreFrameworkBundle:SupportRole')->findOneByCode('ROLE_SUPER_ADMIN');
+        $userInstance = $entityManager->getRepository('CoreFrameworkBundle:UserInstance')->findOneBy([
             'isActive' => true,
             'supportRole' => $role,
         ]);
@@ -201,7 +201,7 @@ class XHR extends Controller
             list($name, $email, $password) = array_values($_SESSION['USER_DETAILS']);
             // Retrieve existing user or generate new empty user
             $accountExistsFlag = false;
-            $user = $entityManager->getRepository('UVDeskCoreBundle:User')->findOneByEmail($email) ?: (new CoreEntities\User())->setEmail($email);
+            $user = $entityManager->getRepository('CoreFrameworkBundle:User')->findOneByEmail($email) ?: (new CoreEntities\User())->setEmail($email);
 
             if ($user->getId() != null) {
                 $userInstance = $user->getAgentInstance();
