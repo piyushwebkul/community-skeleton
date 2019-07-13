@@ -1,3 +1,7 @@
-uvdesk_helpdesk:
+uvdesk:
     resource: .
-    type: uvdesk_router
+    type: uvdesk
+
+uvdesk_extensions:
+    resource: .
+    type: uvdesk_extensions
