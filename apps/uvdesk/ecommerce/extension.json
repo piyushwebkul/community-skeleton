@@ -1,0 +1,17 @@
+{
+    "name": "uvdesk/ecommerce",
+    "description": "UVDesk Community ECommerce Module",
+    "type": "uvdesk-module",
+    "authors": [
+        {
+            "name": "Akshay Kumar",
+            "email": "akshay.kumar758@webkul.com"
+        }
+    ],
+    "autoload": {
+        "UVDesk\\CommunityPackages\\UVDesk\\ECommerce\\": "src/"
+    },
+    "package": {
+        "UVDesk\\CommunityPackages\\UVDesk\\ECommerce\\ECommercePackage": ["all"]
+    }
+}

@@ -1,0 +1,227 @@
+<style>
+    #uv-todo-view .uv-filter-paper {
+        top: 100px;
+    }
+    ul.todo-list {
+        list-style-type: none;
+        padding: 0px;
+        margin: 0;
+    }
+    .todo-input,  .todo-list .text-content {
+        display: inline-block;
+        border: none;
+        width: calc(100% - 75px);
+        color: #6F6F6F;
+        font-size: 15px;
+    }
+    .todo-input-wrapper {
+        display: inline-block;
+        border-bottom: solid 1px #D3D3D3;
+        width: 100%;
+        padding: 10px 0px;
+    }
+    ul.todo-list li {
+        border-bottom: solid 1px #D3D3D3;
+        padding: 10px 0px;
+        position: relative;
+    }
+    .todo-list .uv-checkbox, label[for=todo-add-input] {
+        margin-right: 10px;
+        vertical-align: top;
+    }
+    label[for=todo-add-input] {
+        margin-left: 5px;
+    }
+    .todo-list .uv-checknox-view {
+        color: #7C70F4;
+    }
+    .todo-list .delete-todo {
+        position: absolute;
+        right: 15px;
+        top: 13px;
+        cursor: pointer;
+        display: none;
+    }
+    .todo-list li:hover .delete-todo {
+        display: block;
+    }
+    .line-through {
+        text-decoration: line-through;
+    }
+</style>
+<!-- Todo bar -->
+<div class="uv-filter-view" id="uv-todo-view">
+
+    <!--/-->
+    <div class="uv-filter-head">
+        <div class="uv-filter-title">
+            <h6>{{ 'To Do'|trans }}</h6>
+            <span>{{ 'Create To Do lists to remember your most important keys'|trans }}</span>
+        </div>
+        <div class="uv-filter-toggle" id="filter-close-trigger">
+            <span></span>
+        </div>
+    </div>
+    <!--//-->
+
+    <div class="uv-filter-paper">
+        <ul class="todo-list">
+        </ul>
+        <div class="todo-input-wrapper">
+            <label for="todo-add-input"><span class="uv-todo-icon-add"></span></label>
+            <span>
+                <input id="todo-add-input" type="text" class="todo-input text-content" placeholder="{{ 'Add'|trans }}" />
+            </span>
+        </div>
+    </div>
+</div>
+<!-- //Todo bar -->
+
+<script type="text/template" id="todo-item-temp">
+    <div class='uv-checkbox'>
+        <input type='checkbox' id="<%= 1 + id %>" class='mark-complete' <% if(status) { %>checked<% } %> />
+        <label class='uv-check-todo' for="<%= 1 + id %>"></label>
+    </div>
+    <span class="text-content <% if(status) print('line-through') %>">
+        <%- description %>
+    </span>
+    <span class="delete-todo uv-todo-icon-remove"></span>
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        //Todo list Code starts here
+
+        var TodoModel = Backbone.Model.extend({
+            idAttribute : "id",
+            defaults : {
+                ticketId : {{ id }}
+            },
+            parse: function (resp, options) {
+                return resp.todo;
+            },
+            urlRoot : "{{ path('todo_action') }}"
+        });
+
+        var TodoCollection = Backbone.Collection.extend({
+            model : TodoModel,
+        });
+
+        var TodoItem = Backbone.View.extend({
+            tagName : "li",
+            className: '',
+            template : _.template($('#todo-item-temp').html()),
+            events : {
+                'click .delete-todo' : "confirmRemove",
+                'change .mark-complete' : 'markComplete',
+            },
+            render : function () {
+                this.$el.html(this.template(this.model.toJSON()));
+                return this;
+            },
+            unrender : function(response) {
+                if(response.alertMessage != undefined) {
+                    todoListView.render();
+                    app.appView.renderResponseAlert(response);
+                }
+            },
+            removeItem : function () {
+                self = this;
+                app.appView.showLoader();
+                payload = { 'ticketId' : this.model.attributes.ticketId };
+                console.log(payload);
+                this.model.destroy({
+                    data : payload,
+                    success : function (model, response, options) {
+                        app.appView.hideLoader();
+                        self.$el.remove();
+                        self.unrender(response);
+                    },
+                    error: function (model, xhr, options) {
+                        if(url = xhr.getResponseHeader('Location'))
+                            window.location = url;
+                    }
+                });
+            },
+            markComplete : function(e) {
+                var this_this = Backbone.$(e.currentTarget);
+                if(this_this.is(':checked')) {
+                    this.model.attributes.status = 1;
+                    $(this_this).closest('li').find('.text-content').addClass('line-through');
+                } else {
+                    this.model.attributes.status = 0;
+                    $(this_this).closest('li').find('.text-content').removeClass('line-through');
+                }
+                payload = { 'ticketId' : this.model.attributes.ticketId };
+                this.model.save({
+                    data : payload,
+                    success : function (model, response, options) {
+                    },
+                    error: function (model, xhr, options) {
+                        if(url = xhr.getResponseHeader('Location'))
+                            window.location = url;
+                    }
+                });
+            },
+            confirmRemove: function(e) {
+                e.preventDefault();
+                app.appView.openConfirmModal(this)
+            }
+        });
+
+        var TodoList = Backbone.View.extend({
+            el : $("#uv-todo-view"),
+            events : {
+                'keypress .todo-input' : 'addTodo'
+            },
+            render : function() {
+                var self = this;
+                this.$el.find(".todo-list").html('');
+                _.each(todoCollection.models, function (item) {
+                    this.renderTodo(item);
+                }, this);
+            },
+            renderTodo : function (item) {
+                var todo = new TodoItem({
+                    model: item
+                });
+                this.$el.find('.todo-list').append(todo.render().el);
+            },
+            addTodo : function(e) {
+                var currentElement = Backbone.$(e.currentTarget);
+                var text = currentElement.val().trim();
+                if (e.which === 13 && text) {
+                    var self = this;
+                    app.appView.showLoader();
+                    currentElement.val('');
+                    this.model = new TodoModel();
+                    this.model.set({description: text});
+
+                    this.model.save({}, {
+                        //async: false,
+                        success: function (model, response, options) {
+                            if(response.alertClass == "success") {
+                                todoCollection.add(model);
+                                self.render();
+                            }
+                            app.appView.hideLoader();
+                            app.appView.renderResponseAlert(response);
+                        },
+                        error: function (model, xhr, options) {
+                            app.appView.hideLoader();
+                            if(url = xhr.getResponseHeader('Location'))
+                                window.location = url;
+                        }
+                    });
+                }
+            }
+        });
+
+        //Todo list Code ends here
+        {# var todoCollection = new TodoCollection($.parseJSON('{{ ticket_service.getTicketTodoById(id)|json_encode|raw }}')); #}
+
+        var todoListView = new TodoList();
+        todoListView.render();
+
+    });
+</script>

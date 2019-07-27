@@ -1,0 +1,17 @@
+{
+    "name": "uvdesk/commons",
+    "description": "UVDesk Community Commons Module",
+    "type": "uvdesk-module",
+    "authors": [
+        {
+            "name": "Akshay Kumar",
+            "email": "akshay.kumar758@webkul.com"
+        }
+    ],
+    "autoload": {
+        "UVDesk\\CommunityPackages\\UVDesk\\Commons\\": "src/"
+    },
+    "extensions": {
+        "UVDesk\\CommunityPackages\\UVDesk\\Commons\\Commons": ["all"]
+    }
+}

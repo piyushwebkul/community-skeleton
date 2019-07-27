@@ -1,0 +1,141 @@
+<template id="uvdesk-order-syncronization-loading-screen-template">
+    <div class="shopify-dashboard-loader">
+        <div class="loader">
+            <div class="cp-spinner cp-balls"></div>
+
+            <% if (text != '') { %>
+                <p class="text"><%- text %></p>
+            <% } %>
+        </div>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-welcome-section-template">
+    <div class="welcome-screen banner">
+        <img class="uv-app-splash-image" src="{{ asset('bundles/extensionframework/extensions/uvdesk/ecommerce/assets/ecommerce-splash-shopify.png') }}" alt="Shopify ECommerce">
+
+        <h2>Shopify ECommerce</h2>
+        <p>You haven't added any Shopify channel yet, Integrate your Shopify Seller Account as a channel to sync Customers and Orders to uvdesk</p>
+        <a class="uv-btn uv-app-shopify-cta-setup">Setup</a>
+    </div>
+
+    <div class="welcome-screen configure-store" style="display: none;">
+        <h1 style="border-bottom: solid 1px #D3D3D3; margin-bottom: 30px; padding-bottom: 10px;">Lets start by integrating with your shopify store:</h1>
+
+        <form class="configure-store-form"></form>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-stores-template">
+    <div id="uv-app-shopify-header" class="uv-app-shopify-header">
+        <h2>Manage Configurations</h2>
+
+        <ul>
+            <li><button class="uv-btn-action shopify-button">Add Store</button></li>
+        </ul>
+    </div>
+
+    <div id="uv-app-shopify-dashboard" class="uv-app-shopify-dashboard">
+        <div id="uv-app-shopify-stores" class="shopify-store-listing">
+            <% _.each(stores, function (store) { %>
+                <div class="shopify-store-item" data-id="<%- store.id %>">
+                    <p style="line-height: 1.4em; margin: unset;">
+                        <% if (store.enabled) { %>
+                            <span class="shopify-store-status-flag active" data-status="active"></span>
+                        <% } else { %>
+                            <span class="shopify-store-status-flag inactive" data-status="inactive"></span>
+                        <% } %>
+                        <span style="font-weight: 700; text-transform: uppercase;"><%- store.name %></span>
+                    </p>
+
+                    <p style="line-height: 1.4em; margin: unset; font-size: 12px; font-weight: bold;"><%- store.domain %></p>
+
+                    <ul class="shopify-store-item-buttons">
+                        <li><button class="edit">Edit</button></li>
+                        <li><button class="delete">Delete</button></li>
+                    </ul>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-store-settings-template">
+    <div id="uv-app-shopify-header" class="uv-app-shopify-header">
+        <h2>Manage settings for <%- name %></h2>
+    </div>
+
+    <div id="uv-app-shopify-dashboard" class="uv-app-shopify-dashboard">
+        <form class="configure-store-form">
+            <div class="form-element">
+                <label>Domain :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Your Shopify Store Name</p>
+                    <input name="domain" class="uv-field" type="text" placeholder="example.myshopify.com" value="<%- domain %>">
+                </div>
+            </div>
+
+            <div class="form-element">
+                <label>API Key :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Enter your shopify api key</p>
+                    <input name="api_key" class="uv-field" type="password" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-element">
+                <label>API Password :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Enter your shopify api password</p>
+                    <input name="api_password" class="uv-field" type="password" placeholder="">
+                </div>
+            </div>
+            
+            <div class="uv-action-buttons">
+                <input type="submit" class="form-field uv-btn" id="save-channel" value="Add Store">
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-store-form-template">
+    {# <div class="uv-instructions-block" style="">
+        <h3><span class="uv-icon-info uv-margin-right-5"></span>{{ 'Configuring your application:'|trans }}</h3>
+        <ul>
+            <li>Login to your store's <b>Admin Panel</b>.</li>
+            <li>Once logged in successfully, go to <b>Apps</b> and click on <b>Manage private apps</b>.</li>
+            <li>On your Private Apps page, click on <b>Create a new private app</b> to create a new app.</li>
+            <li>Fill out the necessary details as required.</li>
+            <li>Under <b>Admin API</b> section, provide <b>Read Access</b> to <b>Orders, transactions and fulfillments</b>.</li>
+            <li>Click on <b>Save</b> and under <b>Admin API</b> section you'll be provided with <b>API Key</b> and <b>Password</b> which will be required to connect with your store.</li>
+        </ul>
+    </div> #}
+
+    <div class="form-element">
+        <label>Domain :</label>
+        <div class="form-field">
+            <p class="form-field-info">Your Shopify Store Name</p>
+            <input name="domain" class="uv-field" type="text" placeholder="example.myshopify.com" value="">
+        </div>
+    </div>
+
+    <div class="form-element">
+        <label>API Key :</label>
+        <div class="form-field">
+            <p class="form-field-info">Enter your shopify api key</p>
+            <input name="api_key" class="uv-field" type="password" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-element">
+        <label>API Password :</label>
+        <div class="form-field">
+            <p class="form-field-info">Enter your shopify api password</p>
+            <input name="api_password" class="uv-field" type="password" placeholder="">
+        </div>
+    </div>
+    
+    <div class="uv-action-buttons">
+        <input type="submit" class="form-field uv-btn" id="save-channel" value="Add Store">
+    </div>
+</template>

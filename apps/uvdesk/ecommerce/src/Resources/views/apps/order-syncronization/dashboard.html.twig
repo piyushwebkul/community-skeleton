@@ -1,0 +1,333 @@
+<template id="uvdesk-order-syncronization-loading-screen-template">
+    <div class="shopify-dashboard-loader">
+        <div class="loader">
+            <div class="cp-spinner cp-balls"></div>
+            <% if (text != '') { %>
+                <p class="text"><%- text %></p>
+            <% } %>
+        </div>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-welcome-section-template">
+    <div class="welcome-screen banner">
+        <img class="uv-app-splash-image" src="{{ asset('bundles/extensionframework/extensions/uvdesk/ecommerce/assets/ecommerce-splash-shopify.png') }}" alt="Shopify ECommerce">        
+        <h2>Shopify ECommerce</h2>
+        <p>You haven't added any Shopify channel yet, Integrate your Shopify Seller Account as a channel to sync Customers and Orders to uvdesk</p>
+        <a class="uv-btn uv-app-shopify-cta-setup">Setup</a>
+    </div>
+
+    <div class="welcome-screen configure-store" style="display: none;">
+        <h1 style="border-bottom: solid 1px #D3D3D3; margin-bottom: 30px; padding-bottom: 10px;">Lets start by integrating with your shopify store:</h1>
+        <form class="configure-store-form"></form>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-stores-template">
+    <div id="uv-app-shopify-header" class="uv-app-shopify-header">
+        <h2>Manage Configurations</h2>
+        <ul>
+            <li><button class="uv-btn-action shopify-button">Add Store</button></li>
+        </ul>
+    </div>
+
+    <div id="uv-app-shopify-dashboard" class="uv-app-shopify-dashboard">
+        <div id="uv-app-shopify-stores" class="shopify-store-listing">
+            <% _.each(stores, function (store) { %>
+                <div class="shopify-store-item" data-id="<%- store.id %>">
+                    <p style="line-height: 1.4em; margin: unset;">
+                        <% if (store.enabled) { %>
+                            <span class="shopify-store-status-flag active" data-status="active"></span>
+                        <% } else { %>
+                            <span class="shopify-store-status-flag inactive" data-status="inactive"></span>
+                        <% } %>
+                        <span style="font-weight: 700; text-transform: uppercase;"><%- store.name %></span>
+                    </p>
+
+                    <p style="line-height: 1.4em; margin: unset; font-size: 12px; font-weight: bold;"><%- store.domain %></p>
+
+                    <ul class="shopify-store-item-buttons">
+                        <li><button class="edit">Edit</button></li>
+                        <li><button class="delete">Delete</button></li>
+                    </ul>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-store-settings-template">
+    <div id="uv-app-shopify-header" class="uv-app-shopify-header">
+        <h2>Manage settings for <%- name %></h2>
+    </div>
+
+    <div id="uv-app-shopify-dashboard" class="uv-app-shopify-dashboard">
+        <form class="configure-store-form">
+            <div class="form-element">
+                <label>Domain :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Your Shopify Store Name</p>
+                    <input name="domain" class="uv-field" type="text" placeholder="example.myshopify.com" value="<%- domain %>">
+                </div>
+            </div>
+
+            <div class="form-element">
+                <label>API Key :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Enter your shopify api key</p>
+                    <input name="api_key" class="uv-field" type="password" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-element">
+                <label>API Password :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Enter your shopify api password</p>
+                    <input name="api_password" class="uv-field" type="password" placeholder="">
+                </div>
+            </div>
+
+            <div class="uv-action-buttons">
+                <input type="submit" class="form-field uv-btn" id="save-channel" value="Add Store">
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-store-form-template">
+    <form id="uv-channel-action-form">
+        <div class="form-element">
+            <label>Domain :</label>
+            <div class="form-field">
+                <p class="form-field-info">Your Shopify Store Name</p>
+                <input name="domain" class="uv-field" type="text" placeholder="example.myshopify.com" value="<%= channelDetails.domain %>">
+            </div>
+        </div>
+
+        <div class="form-element">
+            <label>API Key :</label>
+            <div class="form-field">
+                <p class="form-field-info">Enter your shopify api key</p>
+                <input name="api_key" class="uv-field" type="password" placeholder="" value="<%= channelDetails.apiKey %>">
+            </div>
+        </div>
+
+        <div class="form-element">
+            <label>API Password :</label>
+            <div class="form-field">
+                <p class="form-field-info">Enter your shopify api password</p>
+                <input name="api_password" class="uv-field" type="password" placeholder="" value="<%= channelDetails.apiPassword %>">
+            </div>
+        </div>
+
+        <div class="uv-action-buttons" id="<%= channelDetails.channelIndex %>">
+            <input type="submit" class="form-field uv-btn" id="save-channel" value="Add Store">
+            <input type="button" class="form-field uv-btn cancel" id="cancel" value="Cancel">
+        </div>
+    </form>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-stores">
+    <% if (platform.channels.length == 0) { %>
+        <div class="uv-no-channel-content">No Channels Added Yet</div>
+    <% } else { %>
+        <div class="channel-list">
+            <% _.each(platform.channels, function(channel, index) { %>
+                <div class="uv-app-list-brick">
+                    <div class="uv-app-list-brick-lt">
+                      <span class="uv-channel-count">#<%= index + 1 %></span>
+                    </div>
+                    <div class="uv-app-list-brick-rt">
+                        <label><%= channel.name %></label>
+                        <p>
+                            <span class="uv-app-list-flag-<%= channel.enabled ? 'active': 'inactive' %>"><%= channel.enabled ? 'Active' : 'Inactive' %></span>
+                        </p>
+                        <div class="uv-app-list-actions" id="<%= index %>">
+                            <span class="edit-channel">Edit</span>
+                            <span class="uv-delete delete-channel">Delete</span>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+</template>
+
+<template id="uvdesk-platform-accordion-template">
+    <div class="uv-app-view-wrapper">
+        <header>
+            <h1>ECommerce App</h1>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley .</p>
+        </header>
+        <div class="uv-accordion-container">
+            <% _.each(platformsCollection, function(platform, index) { %>
+                <div class="uv-extension-accordion-view" id="<%= index %>">
+                    <div id="uv-accordion-btn-<%= index %>">
+                        <button><%= platform.title %></button>
+                        <span class="uv-accordion-arrow right"></span>
+                    </div>
+                    <div class="uv-accordion-description-container">
+                        <p class="uv-accordion-description"><%= platform.description %></button>
+                        <span class="uv-add-channel-icon" title="Add new channel"></span>
+                        <div id="uv-channel-view-<%= index %>"></div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</template>
+
+
+{# Prestashop start #}
+
+<template id="uvdesk-order-syncronization-loading-screen-prestashop-template">
+    <div class="shopify-dashboard-loader">
+        <div class="loader">
+            <div class="cp-spinner cp-balls"></div>
+            <% if (text != '') { %>
+                <p class="text"><%- text %></p>
+            <% } %>
+        </div>
+    </div>
+</template>
+
+
+<template id="uvdesk-order-syncronization-welcome-section-prestashop-template">
+    <div class="welcome-screen banner">
+        <img class="uv-app-splash-image" src="{{ asset('bundles/extensionframework/extensions/uvdesk/ecommerce/assets/ecommerce-splash-shopify.png') }}" alt="Shopify ECommerce">
+        <h2>Prestashop ECommerce</h2>
+        <p>You haven't added any Prestashop channel yet, Integrate your Prestashop Seller Account as a channel to sync Customers and Orders to uvdesk</p>
+        <a class="uv-btn uv-app-shopify-cta-setup">Setup</a>
+    </div>
+
+    <div class="welcome-screen configure-store" style="display: none;">
+        <h1 style="border-bottom: solid 1px #D3D3D3; margin-bottom: 30px; padding-bottom: 10px;">Lets start by integrating with your prestashop shop:</h1>
+        <form class="configure-store-form"></form>
+    </div>
+</template>
+
+
+<template id="uvdesk-order-syncronization-manage-shop-prestashop-form-template">
+    <form id="uv-channel-action-form">
+        <div class="form-element">
+            <label>Domain :</label>
+            <div class="form-field">
+                <p class="form-field-info">Your Prestashop domain Name</p>
+                <input name="domain" class="uv-field" type="text" placeholder="example.mypreastashop.com" value="<%= channelDetails.domain %>">
+            </div>
+        </div>
+
+        <div class="form-element">
+            <label>API Key :</label>
+            <div class="form-field">
+                <p class="form-field-info">Enter your Prestashop api key</p>
+                <input name="api_key" class="uv-field" type="password" placeholder="" value="<%= channelDetails.apiKey %>">
+            </div>
+        </div>
+
+        <div class="uv-action-buttons" id="<%= channelDetails.channelIndex %>">
+            <input class="form-field uv-btn" id="save-channel" type="submit" value="Add Shop">
+            <input class="form-field uv-btn cancel" id="cancel" type="button" value="Cancel">
+        </div>
+    </form>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-shops-prestashop-template">
+    <div class="uv-app-shopify-header" id="uv-app-prestashop-header">
+        <h2>Manage Configurations</h2>
+        <ul>
+            <li>
+                <button class="uv-btn-action shopify-button">Add Shop</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="uv-app-shopify-dashboard" id="uv-app-prestashop-dashboard">
+        <div class="shopify-store-listing" id="uv-app-prestashop-shops">
+            <% _.each(shops, function (shop) { %>
+                <div class="shopify-store-item" data-id="<%- shop.id %>">
+                    <p style="line-height: 1.4em; margin: unset;">
+                        <% if (shop.enabled) { %>
+                            <span class="shopify-store-status-flag active" data-status="active"></span>
+                        <% } else { %>
+                            <span class="shopify-store-status-flag inactive" data-status="inactive"></span>
+                        <% } %>
+                        <span style="font-weight: 700; text-transform: uppercase;"><%- shop.name %></span>
+                    </p>
+
+                    <p style="line-height: 1.4em; margin: unset; font-size: 12px; font-weight: bold;"><%- shop.domain %></p>
+
+                    <ul class="shopify-store-item-buttons">
+                        <li>
+                            <button class="edit">Edit</button>
+                        </li>
+                        <li>
+                            <button class="delete">Delete</button>
+                        </li>
+                    </ul>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-shop-settings-prestashop-template">
+    <div class="uv-app-shopify-header" id="uv-app-prestashop-header">
+        <h2>Manage settings for
+            <%- name %></h2>
+    </div>
+
+    <div class="uv-app-shopify-dashboard" id="uv-app-prestashop-dashboard">
+        <form class="configure-store-form">
+            <div class="form-element">
+                <label>Domain :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Your Prestashop Store Name</p>
+                    <input name="domain" class="uv-field" type="text" placeholder="example.myprestashop.com" value="<%- domain %>">
+                </div>
+            </div>
+
+            <div class="form-element">
+                <label>API Key :</label>
+                <div class="form-field">
+                    <p class="form-field-info">Enter your Prestashop api key</p>
+                    <input class="uv-field" name="api_key" placeholder="" type="password">
+                </div>
+            </div>
+
+            <div class="uv-action-buttons">
+                <input class="form-field uv-btn" id="save-channel" type="submit" value="Add Shop">
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="uvdesk-order-syncronization-manage-shops-prestashop">
+    <% if (platform.channels.length == 0) { %>
+        <div class="uv-no-channel-content">No Channels Added Yet</div>
+    <% } else { %>
+        <div class="channel-list">
+            <% _.each(platform.channels, function(channel, index) { %>
+                <div class="uv-app-list-brick">
+                    <div class="uv-app-list-brick-lt">
+                        <span class="uv-channel-count">#<%= index + 1 %></span>
+                    </div>
+                    <div class="uv-app-list-brick-rt">
+                        <label><%= channel.name %></label>
+                        <p>
+                            <span class="uv-app-list-flag-<%= channel.enabled ? 'active': 'inactive' %>"><%= channel.enabled ? 'Active' : 'Inactive' %></span>
+                        </p>
+                        <div class="uv-app-list-actions" id="<%= index %>">
+                            <span class="edit-channel">Edit</span>
+                            <span class="uv-delete delete-channel">Delete</span>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+</template>
+
+
+
+{# Prestashop end #}

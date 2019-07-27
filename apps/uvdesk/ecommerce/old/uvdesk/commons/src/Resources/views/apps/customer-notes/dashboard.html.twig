@@ -1,0 +1,338 @@
+<style>
+    #uv-customer-notes {
+        margin-top: 15px;
+        word-wrap: break-word;
+    }
+    textarea.uv-field.uv-limited-height {
+        height: 60px;
+    }
+    .uv-margin-right-5 {
+        margin-right: 5px;
+    }
+    .uv-loader-wrp {
+        position: relative;
+        min-height: 40px;
+        margin-bottom: 30px;
+    }
+    #uv-customer-notes .uv-remove-wrapper {
+        position: relative;
+    }
+    
+    #uv-customer-notes .uv-remove-wrapper .uv-loader {
+        top: 10px;
+    }
+    #uv-customer-notes .uv-loader-wrp .uv-loader {
+        right: unset;
+        left: 30%;
+        top: 10px;
+        transform: scale(1);
+    }
+    .uv-element-block.uv-c-info-item .uv-btn-remove {
+        margin: 10px 0 0 0;
+    }
+    .uv-element-block.uv-c-info-item {
+        border-bottom: solid 1px #D3D3D3;
+        padding-bottom: 10px;
+    }
+    .uv-c-attachment-wrapper {
+        margin-top: 10px;
+    }
+    .uv-c-attachment-wrapper img{
+        zoom: 0.8;
+        margin-right: 5px;
+    }
+    .uv-app-glyph-notes-on-customer {
+        width: 20px;
+        height: 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 5px 0px 5px 10px;
+        background-image: url("../../../../../bundles/webkuldefault/images/app-glyph-notes-on-customer.svg");
+    }
+    .uv-customer-info-view span.uv-icon-timestamp {
+        width: 18px;
+        height: 18px;
+        background-image: url("../../../../../bundles/webkuldefault/images/uvdesk-sprite.svg");
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 3px;
+        margin-top: -3px;
+    }
+    .uv-customer-info-view span.uv-icon-timestamp {
+        background-position: -19px -117px;
+    }
+    .uv-customer-info-view .uv-c-attachment-wrapper>*{
+        margin-right: 5px;
+        margin-bottom: 5px;
+        vertical-align: top;
+        cursor: pointer;
+    }
+    .uv-customer-info-view .uv-strip-label {
+        color: #9E9E9E;
+    }
+    .uv-customer-info-view .uv-margin-10 {
+        margin: 10px 0px;
+    }
+</style>  
+
+<div class="uv-filter-view uv-customer-info-view" id="uv-customer-info-view">
+    <!--/-->
+    <div class="uv-filter-head">			
+        <div class="uv-filter-title">
+            <h6>{{ "Notes on Customer"|trans }}</h6>
+            <span>{{ "These notes will be shown on each ticket created by this customer"|trans }}</span>
+        </div>
+        <div class="uv-filter-toggle" id="filter-close-trigger">
+            <span></span>
+        </div>
+    </div>
+    <!--//-->
+
+    <div class="uv-filter-paper" id="uv-customer-notes">
+        <div id="cnote-list" class="uv-cnote-list">
+        </div>
+        <div class="uv-loader-wrp">
+            <div class="uv-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <form method="POST">
+            <div class="uv-element-block uv-margiin-top-15">
+                <label class="uv-field-label">{{ 'Add Customer Note'|trans }}</label>
+                <div class="uv-field-block">
+                    <textarea name="customerInfo" class="uv-field uv-limited-height"></textarea>
+                    <div class="attachment-block uv-no-error-success-icon">
+                        <label>
+                            <span class="uv-file-label">{{ 'Add Attachment'|trans }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="uv-element-block">
+                <button type="submit" id="uv-save-cnotes" class="uv-btn-small"/>
+                    <span class="uv-icon-add"></span>
+                    <span class="uv-margin-right-5">{{ 'Add Note'|trans }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% set userId = app.user is defined and app.user ? app.user.id : null %}
+<script type="text/template" id="cItemTemp">
+    <div class="uv-margin-10">
+        <% if(createdByUsername) { %>
+            <span class="uv-app-task-text">    
+                <span class="uv-strip-label">By - </span>
+                <span><%- createdByUsername %></span>
+            </span>
+        <% } %>
+
+        <% if(formatedCreatedAt && 'N/A' != formatedCreatedAt ) { %>
+            <div>
+                <span class="uv-strip-label">On - </span>
+                <span class="timeago asde232323" data-toggle="tooltip" data-placement="top" title="<%- formatedCreatedAt %>">
+                    <%- formatedCreatedAt  %>
+                </span>
+            </div>
+        <% } %>
+    </div>
+
+    <span><%- customerInfo %></span>
+    <% if(customerFiles && customerFiles.length) { %>
+        <div class="uv-c-attachment-wrapper">
+            <% _.each(customerFiles, function(file, key) { %>
+                <% if(0 == file.contentType.indexOf('image/') && -1 == ['image/bmp2','image/svg', 'image/svg+xml', 'image/tiff'].indexOf(file.contentType) ) { %>
+                    <img src="<%- file.url %>" height="60px" class="uv-notes-viewer-images">
+                <% } else { %>
+                    <a class="uv-ticket-uploads-brick" href="<%- file.url %>" target="_blank" data-placement="bottom" title="<%- file.name %>" data-toggle="tooltip">
+                        <% if(fileDefaultImages[file.contentType]) { %>
+                            <img src="<%- fileDefaultImages[file.contentType] %>" class="file-icon">
+                        <% } else { %>
+                            <img src="<%- fileDefaultImages['unknown'] %>" class="file-icon">
+                        <% } %>
+                    </a>
+                <% } %>
+            <% }); %>
+        </div>
+    <% } %>
+
+    {# <% if({{ user_service.checkPermission('ROLE_ADMIN') ? 1 : 0 }} || '{{ userId }}' == createdByUser ) { %>
+        <div class="uv-remove-wrapper">
+            <a class="uv-btn-remove" href="#">
+                <span class="uv-icon-discard"></span>
+                {{ 'Remove Note'|trans }}
+            </a>
+        </div>
+    <% } %> #}
+</script>
+
+<script type="text/javascript">
+    $(function() {
+        var notesUrl = '{{ path("app_fetch_application_collection", { "applicationRouteName": "notes-on-customer" }) }}';
+        {# var notesUrl = '{{ path("app_fetch_application_collection", { "applicationRouteName": "notes-on-customer" }) }}' + '?customerId=' + '{{ customerId }}'; #}
+        var NoteModel = Backbone.Model.extend({
+            idAttribute: 'id',
+            urlRoot : notesUrl,
+        });
+
+        var NoteItem = Backbone.View.extend({
+            tagName: 'div',
+            className: 'uv-element-block uv-c-info-item',
+            template: _.template($('#cItemTemp').html()),
+            currentThis: null,
+            events: {
+                'click .uv-btn-remove': 'confirmRemove',                
+            },
+            initialize: function(e) {
+                this.render();
+            },
+            render: function(e) {
+                this.$el.html(this.template(this.model.toJSON()));
+                this.$el.find('.uv-notes-viewer-images').viewer();
+                return this;
+            },
+            confirmRemove: function(e) {
+                e.preventDefault();
+                this.currentThis = this;
+                app.appView.openConfirmModal(this);
+            },
+            removeItem: function(e) {
+                var self = this.currentThis;
+                var url = notesUrl + '&id=' + self.model.get('id');
+                self.$el.find('.uv-remove-wrapper').append('<div class="uv-loader"><span></span><span></span><span></span></div>');
+                self.model.destroy({
+                    url: url,
+                    success: function(model, response) {
+                        self.onRemove();
+                        app.appView.renderResponseAlert(response);
+                    }, error: function(xhr) {
+                        self.$el.find('.uv-loader').remove();
+                    },
+                });
+            },
+            onRemove: function(e) {
+                this.remove();
+            },
+        });
+        
+
+        var CNotes = Backbone.View.extend({
+            el: '#uv-customer-notes',
+            listEl: '#cnote-list',
+            events: {
+                'click #uv-save-cnotes': 'submitForm',
+                'blur textarea[name="customerInfo"]': 'validateField',
+            },
+            syncData: function(e) {
+                var self = this;
+                $.ajax({
+                    url: notesUrl,
+                    success: function(response) {
+                        self.renderList(response);
+                        $(self.el).find('.uv-loader-wrp').hide();
+                    },
+                    error: function(xhr) {
+                        $(self.listEl).html('');
+                        $(self.el).find('.uv-loader-wrp').hide(); 
+                    },
+                });
+            },
+            renderList: function(response) {
+                self = this;
+                $(self.listEl).html('');        
+                if(response.length) {
+                    $.each(response, function(index, info) {
+                        var noteItem = new  NoteItem({
+                            model: new NoteModel(info)
+                        });
+                        $(self.listEl).append(noteItem.$el);
+                    });
+                }               
+            },
+            submitForm: function(e) {
+                e.preventDefault();
+                var target = $(e.target);
+                var form = target.closest('form');
+                // var data = form.serializeObject();
+                var textField = form.find('textarea[name="customerInfo"]');
+                var self = this;
+                var formdata = new FormData();
+                formdata.append('customerInfo', textField.val() );
+
+                $.each($('#uv-customer-info-view input[type="file"]'), function(index, input) {
+                    var files = input.files;
+                    if(files.length) {
+                        for(i=0;i<files.length;i++) {
+                            var file = files[i];
+                            formdata.append('customerFiles['+ index + i  +']', file);
+                        }
+                        
+                    }
+                });
+
+                if(this.checkIsValidField(textField)) {
+                    target.attr('disabled', 'disabled');
+                    $(self.el).find('.uv-loader-wrp').show();
+                    $(self.el).find('form').hide();
+                    
+                    $.ajax({
+                        url : notesUrl,
+                        type : 'POST',
+                        data: formdata,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success : function(response) {
+                            $(self.el).find('.uv-loader-wrp').hide();
+                            $(self.el).find('form').show();
+                            $(self.el).find('.uv-added-attachment').remove();
+                            target.removeAttr('disabled');
+                            app.appView.renderResponseAlert(response);
+                            var noteItem = new NoteItem({
+                                model: new NoteModel(response)
+                            });
+                            $(self.listEl).append(noteItem.$el);
+                            if(form.length) {
+                                form[0].reset();
+                            }
+                        },
+                        error: function (xhr) {
+                            $(self.el).find('.uv-loader-wrp').hide();
+                            $(self.el).find('form').show();
+                            target.removeAttr('disabled');
+                            app.appView.renderResponseAlert(warningResponse);
+
+                            if(url = xhr.getResponseHeader('Location'))
+                                window.location = url;
+                        }
+                    });
+                }
+            },
+            validateField: function(e) {
+                this.checkIsValidField($(e.target));
+            },
+            checkIsValidField: function(textField) {
+                if(textField.val()) {
+                    textField.removeClass('uv-field-error');
+                    textField.next('.uv-field-message').remove();
+                    return true;
+                } else {
+                    error = "{{ 'This field is mandatory'|trans }}";
+                    textField.addClass('uv-field-error');
+                    textField.next('.uv-field-message').remove();
+                    textField.after("<span class='uv-field-message' style='font-size: 15px'>" + error + "</span>");
+                }
+            },
+        });
+
+        var cnotes = new CNotes();
+        setTimeout(function() {
+            cnotes.syncData();
+        }, 1000);     
+    });
+</script>

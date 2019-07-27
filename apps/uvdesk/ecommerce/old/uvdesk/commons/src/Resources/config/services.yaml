@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    UVDesk\CommunityPackages\UVDesk\Commons\:
+        resource: '../../*'
+        exclude: '../../{Scripts}'
+    
